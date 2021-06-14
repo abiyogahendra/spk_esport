@@ -54,7 +54,7 @@
             <!-- HEADER DESKTOP-->
                     <!-- MAIN CONTENT-->
                     <div class="main-content">
-                       
+                       @yield('content')
                     </div>
                     <!-- END MAIN CONTENT-->
             <!-- END PAGE CONTAINER-->
@@ -77,9 +77,13 @@
     <script src="{{asset('template/vendor/counter-up/jquery.waypoints.min.js')}}"></script>
     <script src="{{asset('template/vendor/counter-up/jquery.counterup.min.js')}}">
     </script>
+
+    <!-- custom-page -->
+    @yield('custom-page')
+
     <script src="{{asset('template/vendor/circle-progress/circle-progress.min.js')}}"></script>
     <script src="{{asset('template/vendor/perfect-scrollbar/perfect-scrollbar.js')}}"></script>
-    <script src="{{asset('template/vendor/chartjs')}}/Chart.bundle.min.js')}}"></script>
+    <script src="{{asset('template/vendor/chartjs/Chart.bundle.min.js')}}"></script>
     <script src="{{asset('template/vendor/select2/select2.min.js')}}">
     </script>
 

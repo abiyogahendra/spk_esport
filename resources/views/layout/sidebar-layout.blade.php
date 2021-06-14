@@ -53,28 +53,28 @@
     <div class="menu-sidebar__content js-scrollbar1">
         <nav class="navbar-sidebar">
             <ul class="list-unstyled navbar__list">
-                <li class="active has-sub">
-                    <a class="js-arrow" href="#">
+                <li class="nav-active active has-sub">
+                    <a class="js-arrow" href="#" onclick="IndexDashboard()">
                         <i class="fas fa-desktop"></i>Beranda</a>
                 </li>
-                <li>
-                    <a href="chart.html">
+                <li class="nav-active nav-data-talent has-sub">
+                    <a href="#" onclick="IndexDataTalent()">
                         <i class="fas  fa-users"></i>Data Talent</a>
                 </li>
-                <li>
-                    <a href="table.html">
+                <li class="nav-active nav-data-mining has-sub">
+                    <a href="#" onclick="IndexDataMining()">
                         <i class="fas fa-gears"></i>Data Mining</a>
                 </li>
-                <li>
-                    <a href="form.html">
+                <li class="nav-active nav-pohon-keputusan has-sub">
+                    <a href="#" onclick="IndexPohonKeputusan()">
                         <i class="fa fa-sitemap"></i>Pohon Keputusan</a>
                 </li>
-                <li>
-                    <a href="calendar.html">
+                <li class="nav-active nav-prediksi-c4 has-sub">
+                    <a href="#" onclick="IndexPrediksiC4()">
                         <i class="fas fa-user"></i>Prediksi C4</a>
                 </li>
-                <li>
-                    <a href="map.html">
+                <li class="nav-active nav-hasil-prediksi has-sub">
+                    <a href="#" onclick="IndexHasilPrediksi()">
                         <i class="fas fa-bar-chart-o"></i>Hasil Prediksi</a>
                 </li>
             </ul>

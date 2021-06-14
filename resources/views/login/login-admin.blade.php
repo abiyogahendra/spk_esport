@@ -36,9 +36,13 @@
     <!-- Custom CSS -->
     <link href="{{asset('custom/css/yobri_responsive.css')}}" rel="stylesheet" media="all">
 
+    <!-- swal 2 -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body class="animsition">
+    <input type="hidden" style="display=hidden" name="token_" value="{{ csrf_token() }}">
     <div class="page-wrapper">
         <div class="page-content--bge5">
             <div class="container">
@@ -51,22 +55,23 @@
                         </div>
                         <div class="login-form">
                             <form action="" method="post">
-                                <div class="form-group">
+                                <div class="form-group inputan">
                                     <label>Email Address</label>
                                     <input class="au-input au-input--full" type="email" name="email" placeholder="Email" required>
+                                    <div class="alert alert-danger hide-dulu " role="alert"> </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group inputan">
                                     <label>Password</label>
                                     <input class="au-input au-input--full" type="password" name="password" placeholder="Password" required>
+                                    <div class="alert alert-danger hide-dulu " role="alert"> </div>
                                 </div>
-                                <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit">sign in</button>
                             </form>
+                            <button class="au-btn au-btn--block au-btn--green m-b-20" onclick="LoginProcess()">sign in</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Jquery JS-->
@@ -86,12 +91,16 @@
     </script>
     <script src="{{asset('template/vendor/circle-progress/circle-progress.min.js')}}"></script>
     <script src="{{asset('template/vendor/perfect-scrollbar/perfect-scrollbar.js')}}"></script>
-    <script src="{{asset('template/vendor/chartjs')}}/Chart.bundle.min.js')}}"></script>
     <script src="{{asset('template/vendor/select2/select2.min.js')}}">
     </script>
 
     <!-- Main js')}}-->
     <script src="{{asset('template/js/main.js')}}"></script>
+
+    <script src="{{asset('custom/js/login/token.js')}}"></script>
+    <script src="{{asset('custom/js/login/login-process.js')}}"></script>
+
+
 
 </body>
 

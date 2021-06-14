@@ -9,7 +9,7 @@
                                 <img src="{{asset('template/images/icon/avatar-01.png')}}" alt="John Doe" />
                             </div>
                             <div class="content">
-                                <a class="js-acc-btn" href="#">Admin</a>
+                                <a class="js-acc-btn" href="#">{{Auth::user()->name}}</a>
                             </div>
                             <div class="account-dropdown js-dropdown">
                                 <div class="info clearfix">
@@ -26,7 +26,7 @@
                                     </div>
                                 </div>
                                 <div class="account-dropdown__footer">
-                                    <a href="#">
+                                    <a href="{{ route('logout-admin') }}">
                                         <i class="zmdi zmdi-power"></i>Logout</a>
                                 </div>
                             </div>
