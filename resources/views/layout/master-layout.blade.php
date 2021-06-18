@@ -8,7 +8,7 @@
     <meta name="description" content="au theme template">
     <meta name="author" content="Hau Nguyen">
     <meta name="keywords" content="au theme template">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Title Page-->
     <title>Dashboard</title>
 
@@ -30,6 +30,10 @@
     <link href="{{asset('template/vendor/select2/select2.min.css')}}" rel="stylesheet" media="all">
     <link href="{{asset('template/vendor/perfect-scrollbar/perfect-scrollbar.css')}}" rel="stylesheet" media="all">
 
+    <!-- dataTable -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css"> 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css"> 
+
     <!-- Main CSS-->
     <link href="{{asset('template/css/theme.css')}}" rel="stylesheet" media="all">
 
@@ -38,6 +42,7 @@
 </head>
 
 <body class="animsition">
+    <input type="hidden" name="data_token" value="{{ csrf_token()}}">
     <div class="page-wrapper">
         <!-- sidebar mobile-->
             
@@ -77,7 +82,14 @@
     <script src="{{asset('template/vendor/counter-up/jquery.waypoints.min.js')}}"></script>
     <script src="{{asset('template/vendor/counter-up/jquery.counterup.min.js')}}">
     </script>
-
+    <!-- datatable   -->
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+     
+     
+    <script src="{{asset('custom/js/landing-page/data_token.js')}}"></script>
     <!-- custom-page -->
     @yield('custom-page')
 

@@ -52,6 +52,8 @@ Route::group(['middleware' => ['auth']], function(){
     
     // talent index
     Route::get('/index-talent', [DataTalentController::class, 'IndexPageTalent'])->name('data-talent');
+    Route::get('/data-table-data-talent', [DataTalentController::class, 'DataTableTalent']);
+    Route::post('/upload-data-talent', [DataTalentController::class, 'PostDataTalent']);
     
     // mining index
     Route::get('/index-mining', [DataMiningController::class, 'IndexPageMining'])->name('data-mining');
