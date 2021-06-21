@@ -37,6 +37,9 @@
     <!-- Main CSS-->
     <link href="{{asset('template/css/theme.css')}}" rel="stylesheet" media="all">
 
+    <!-- swal 2 -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <!-- Custom CSS -->
     <link href="{{asset('custom/css/yobri_responsive.css')}}" rel="stylesheet" media="all">
 </head>

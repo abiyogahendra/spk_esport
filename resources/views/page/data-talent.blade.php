@@ -6,19 +6,19 @@
                     <!-- USER DATA-->
                     <div class="user-data">
                         <h1 class="title-3 m-b-30 center"><i class="zmdi zmdi-account-calendar"></i>Input Data Talent</h1>
-                        <form action="post" enctype="multipart/form-data">
+                        <form action="upload-data-talent" method="post" enctype="multipart/form-data">
                             <div class="container">
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-9 center" >
-                                            <input type="file" id="file-input" style="border-style: solid; border-color: #bbbbbb;" name="data_talent" class="form-control-file">
-                                        </div>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-9 center" >
+                                        <input type="file" id="file-input" style="border-style: solid; border-color: #bbbbbb;" name="data_talent" class="form-control-file">
                                     </div>
-                            </div>
-                            <div class="user-data__footer">
-                                <button class="btn btn-outline-success btn-lg" onclick="PostInputDataTalent()"><i class="fas fa-plus-square"></i> Upload</button>
-                                <button type="button" class="btn btn-outline-danger btn-lg"><i class="fa fa-warning"></i> Hapus Semua Talent</button>
+                                </div>
                             </div>
                         </form>
+                        <div class="user-data__footer">
+                            <button class="btn btn-outline-success btn-lg" onclick="PostInputDataTalent()"><i class="fas fa-plus-square"></i> Upload</button>
+                            <button type="button" class="btn btn-outline-danger btn-lg" onclick="DeleteAllDataTalent()"><i class="fa fa-warning"></i> Hapus Semua Talent</button>
+                        </div>
                     </div>
                     <!-- END USER DATA-->
                 </div>

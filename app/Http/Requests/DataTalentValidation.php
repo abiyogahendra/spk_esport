@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginValidation extends FormRequest
+class DataTalentValidation extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,13 @@ class LoginValidation extends FormRequest
     public function rules()
     {
         return [
-              'data_talent' => 'required|email',
+              'data_talent' => 'required|mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ];
     }
     public function messages(){
         return [
-            'email.required' => 'Masukkan Email',
-            'email.email' => 'Pastikan Email Yang Dimasukkan Benar',
-            'password.required' => 'Masukkan Password',
+            'data_talent.required' => 'Masukkan Dataset',
+            'data_talent.mimetypes' => 'File Harus Excel berekstensi .xlsx',
         ];
     }
 }

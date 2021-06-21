@@ -23,6 +23,6 @@ class ExcelRule implements Rule
 
     public function message()
     {
-        return 'FIle Harus Berekstensi: xlsx.';
+        return 'File Harus Berekstensi: xlsx.';
     }
 }

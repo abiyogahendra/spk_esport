@@ -41,6 +41,11 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+        
+        'file' => [
+            'driver' => 'local',
+            'root' => public_path('/xlsx'),
+        ],
 
         's3' => [
             'driver' => 's3',
