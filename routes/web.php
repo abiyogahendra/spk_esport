@@ -51,26 +51,28 @@ Route::group(['middleware' => ['auth']], function(){
     
     
     // talent index
-    Route::get('/index-talent', [DataTalentController::class, 'IndexPageTalent'])->name('data-talent');
-    Route::get('/data-table-data-talent', [DataTalentController::class, 'DataTableTalent']);
-    Route::post('/upload-data-talent', [DataTalentController::class, 'PostDataTalent']);
-    Route::post('/delete-all-data-talent', [DataTalentController::class, 'DeleteAllDataTalent']);
-    
+        Route::get('/index-talent', [DataTalentController::class, 'IndexPageTalent'])->name('data-talent');
+        Route::get('/data-table-data-talent', [DataTalentController::class, 'DataTableTalent']);
+        Route::post('/upload-data-talent', [DataTalentController::class, 'PostDataTalent']);
+        Route::post('/delete-all-data-talent', [DataTalentController::class, 'DeleteAllDataTalent']);
+        
+   
     // mining index
-    Route::get('/index-mining', [DataMiningController::class, 'IndexPageMining'])->name('data-mining');
+        Route::get('/index-mining', [DataMiningController::class, 'IndexPageMining'])->name('data-mining');
     
     // pohon keputusan index
-    Route::get('/index-pohon-keputusan', [PohonKeputusanController::class, 'IndexPagePohonKeputusan'])->name('data-pohon-keputusan');
+        Route::get('/index-pohon-keputusan', [PohonKeputusanController::class, 'IndexPagePohonKeputusan'])->name('data-pohon-keputusan');
+        Route::get('/data-table-data-rule', [PohonKeputusanController::class, 'DataTableRule']);
     
     // prediksi c4 index
-    Route::get('/index-prediksi-c4', [PrediksiC4Controller::class, 'IndexPagePrediksiC4'])->name('data-prediksi-c4');
+        Route::get('/index-prediksi-c4', [PrediksiC4Controller::class, 'IndexPagePrediksiC4'])->name('data-prediksi-c4');
 
     // hasil prediksi index
-    Route::get('/index-hasil-prediksi', [HasilPrediksiController::class, 'IndexPageHasilPrediksi'])->name('data-hasil-prediksi');
+        Route::get('/index-hasil-prediksi', [HasilPrediksiController::class, 'IndexPageHasilPrediksi'])->name('data-hasil-prediksi');
 
 
 
 
 
-    Route::get('/logout', [LoginController::class, 'LogoutProcess'])->name('logout-admin');
+        Route::get('/logout', [LoginController::class, 'LogoutProcess'])->name('logout-admin');
 });
