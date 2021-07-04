@@ -6,8 +6,13 @@
                     <!-- USER DATA-->
                     <div class="user-data">
                         <h1 class="title-3 m-b-30 center"><i class="zmdi zmdi-account-calendar"></i>Data Mining Page</h1>
+                        <div class="row keterangan-tersembunyi justify-content-center">
+                                <div class="col-8 center">
+                                    <p>Anda Telah Melakukan Proses Mining, Anda Dapat melihat Rule Pada Menu Pohon keputusan</p>
+                                </div>
+                            </div>
                         <div class="user-data__footer">
-                            <button class="btn btn-outline-success btn-lg" onclick="#"><i class="fas fa-plus-square"></i> Proses Mining</button>
+                            <button class="btn btn-outline-success btn-lg" onclick="HitungMining()"><i class="fas fa-plus-square"></i> Proses Mining</button>
                         </div>
                     </div>
                     <!-- END USER DATA-->

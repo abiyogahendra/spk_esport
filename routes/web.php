@@ -59,7 +59,7 @@ Route::group(['middleware' => ['auth']], function(){
    
     // mining index
         Route::get('/index-mining', [DataMiningController::class, 'IndexPageMining'])->name('data-mining');
-        Route::get('hitung-mining', [DataMiningController::class, 'HitungMining']);
+        Route::post('hitung-mining', [DataMiningController::class, 'HitungMining']);
     
     // pohon keputusan index
         Route::get('/index-pohon-keputusan', [PohonKeputusanController::class, 'IndexPagePohonKeputusan'])->name('data-pohon-keputusan');

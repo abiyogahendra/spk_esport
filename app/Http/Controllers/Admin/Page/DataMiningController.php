@@ -132,7 +132,7 @@ class DataMiningController extends Controller
                                 }
                             })
                     ->get();
-                dump($parent);
+                // dump($parent);
                 $lolos_diterima = 0;
                 $lolos_ditolak = 0;
                 foreach ($lolos as $a) {
@@ -537,7 +537,7 @@ class DataMiningController extends Controller
             // dd($paren    t_lolos);
             $hasil_lolos = $this->Perulangan_Perhitungan($parent_lolos, $data, $node_att, $entropy_induk_lolos);
             if(isset($hasil_lolos['done'])){
-                dump($parent);
+                // dump($parent);
                 $parent_lolos = $parent."AND".$data['poin'].'=lolos';
                 $kondisi = [
                     'parent'    => $parent_lolos,
@@ -600,29 +600,52 @@ class DataMiningController extends Controller
     function Perulangan_cabang($data, $parent, $node_att, $entropy_induk){
       
             if($parent == null){ 
-                // dump('as');
                 $hitung = $this->Parent_zero($data, $node_att);    
             }else if($parent != null){
-                // dump($parent);
-                // dd($parent);
                 $hitung = $this->Parent_add($data, $parent);
             }  
         return true;
     }
     function HitungMining(Request $request){
-        // Menghapus semua data rule
-        DB::table('rule')->truncate();
+        
+        // melakukan check database
+        $check = DB::table('talent_survey')->count();
+
+        if($check != 0){
+            // Menghapus semua data rule
+            DB::table('rule')->truncate();
+            DB::table('player_experience')->truncate();
+            DB::table('skill')->truncate();
+            DB::table('attitude')->truncate();
+            DB::table('intellegence')->truncate();
+            DB::table('turnamen')->truncate();
+            DB::table('perhitungan')->truncate();
+
+            // menjalankan Perhitungan pertama
+            $data = $this->Perhitungan_pertama();
+            // menjalankan perhitungan dengan parent zero
+            $parent = null;
+            $node_att = $this->Attribut();
+            $entropy_induk = $data['lolos'];
+            $this->Perulangan_cabang($data, $parent, $node_att, $entropy_induk);
+
+            return response()->json([
+                'code'  => 200
+            ]);
+        }else{
+            return response()->json([
+                'code'  => 500
+            ]);
+        }
         
         
-        // menjalankan Perhitungan pertama
-        $data = $this->Perhitungan_pertama();
-        // dd($data);
-        // 
-        $parent = null;
-        $node_att = $this->Attribut();
-        $entropy_induk = $data['lolos'];
-        $this->Perulangan_cabang($data, $parent, $node_att, $entropy_induk);
         
+        
+        
+        
+        
+        
+       
 
 
     }

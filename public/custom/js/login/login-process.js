@@ -6,6 +6,10 @@ function validateEmail(email) {
 
 function LoginProcess(){
     // e.message('sadad');
+    $.LoadingOverlay("show", {
+        image       : "",
+        fontawesome : "fa fa-cog fa-spin",
+    });
        $('.alert').addClass('hide-dulu');
         $.ajax({
             url : '/login_process',
@@ -17,6 +21,7 @@ function LoginProcess(){
             type : 'post',
             dataType : 'json',
             success : function(e){
+                $.LoadingOverlay("hide");
                 if(e.code == 200 ){
                     Swal.fire({
                         icon: 'success',

@@ -59,3 +59,68 @@ function IndexDataMining(){
         }
     })
 }
+
+function HitungMining(){
+    $.LoadingOverlay("show", {
+        image       : "",
+        fontawesome : "fa fa-cog fa-spin",
+    }); 
+     $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url     : '/hitung-mining',
+        data    : {},
+        type    : 'post',
+        dataType : 'json',
+        success : function(q){
+            if(q.code == 200){
+                $.LoadingOverlay("hide");
+                $('.keterangan-tersembunyi').removeClass('keterangan-tersembunyi');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Proses Mining Telah Berhasil',
+                    html : 'Silahkan Cek Pohon Keputusan',
+                    timerProgressBar: true,
+                    timer: 9000,
+                    didOpen: () => {
+                        Swal.showLoading()
+                        timerInterval = setInterval(() => {
+                          const content = Swal.getContent()
+                          if (content) {
+                            const b = content.querySelector('b')
+                            if (b) {
+                              b.textContent = Swal.getTimerLeft()
+                            }
+                          }
+                        }, 100)
+                      },
+                      willClose: () => {
+                        clearInterval(timerInterval)
+                    }
+                })
+            }else if(q.code == 500){
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Dataset Belum Terimport',
+                    html : 'Mohon Import Terlebih Dahulu Dataset Untuk Melakukan Prosees Mining',
+                    timerProgressBar: true,
+                    timer: 9000
+                })
+            }
+        },
+        error : function(e){
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Terjadi Kesalahan',
+                html : 'Mohon Hubungi Pengembang',
+                timerProgressBar: true,
+                timer: 9000
+            })
+        }
+    })
+}
