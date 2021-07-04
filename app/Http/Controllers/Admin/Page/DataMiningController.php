@@ -25,12 +25,11 @@ class DataMiningController extends Controller
         ];
         return $node_att;
     }
-    function Attribut_active($att){
-
-    }
     function Hitung_Entropy($total, $nilai1, $nilai2){
         $total = $nilai1 + $nilai2;
-
+        if($total == 0){
+            return $entropy=0;
+        }
         $atribut1 = ((-$nilai1 / $total) * (log(($nilai1 / $total), 2)));
         $atribut2 = ((-$nilai2 / $total) * (log(($nilai2 / $total), 2)));
         
@@ -48,12 +47,16 @@ class DataMiningController extends Controller
         $jml_tidak = $tidak_diterima + $tidak_ditolak;
 
         $total = $jml_lolos + $jml_tidak;
-        $gain = $entropy_induk - ((($jml_lolos / $total) * $entropy_lolos) - (($jml_tidak / $total) * $entropy_tidak));
+        if($total == 0){
+            return $gain = 0;
+        }
+        $gain = $entropy_induk - ((($jml_lolos / $total) * $entropy_lolos) + (($jml_tidak / $total) * $entropy_tidak));
+        
         return $gain;
     }
     function Hitung_attribute($attribute, $entropy_induk, $parent){
-        
-        if($parent == ''){
+        // dd($parent);
+        if($parent == null){
             // menghitung attribute lolos 
                 $lolos = DB::table('talent_survey')
                     ->select([
@@ -64,7 +67,7 @@ class DataMiningController extends Controller
                     ->get();
                 $lolos_diterima = 0;
                 $lolos_ditolak = 0;
-                // dd($lolos);
+                // dump($lolos);
                 foreach ($lolos as $a) {
                     if($a->target == 'Diterima'){
                         $lolos_diterima = $lolos_diterima + 1;
@@ -111,8 +114,75 @@ class DataMiningController extends Controller
                 ];
 
         }else if(preg_match("/AND/i", $parent)){
+            
             $d = explode('AND', $parent);
-            dd($d);
+            foreach ($d as $i=>$a) {
+                $cond[$i] = explode('=', $a);
+            }
+            // lolos
+                $lolos = DB::table('talent_survey')
+                    ->select([
+                        $attribute,
+                        'target',
+                    ])
+                    ->where($attribute,'lolos')
+                    ->where(function ($query) use ($cond) {
+                                foreach ($cond as $q) {
+                                    $query->where($q[0],$q[1]);
+                                }
+                            })
+                    ->get();
+                dump($parent);
+                $lolos_diterima = 0;
+                $lolos_ditolak = 0;
+                foreach ($lolos as $a) {
+                    if($a->target == 'Diterima'){
+                        $lolos_diterima = $lolos_diterima + 1;
+                    }else if($a->target == 'Tidak Diterima'){
+                        $lolos_ditolak = $lolos_ditolak + 1;
+                    }
+                } 
+                $total = 0;     
+                $total = count($lolos);
+                $entropy_lolos = $this->Hitung_Entropy($total, $lolos_diterima, $lolos_ditolak);
+            // tidak
+                $tidak = DB::table('talent_survey')
+                    ->select([
+                        $attribute,
+                        'target',
+                    ])
+                    ->where($attribute,'tidak')
+                    ->where(function ($query) use ($cond) {
+                                foreach ($cond as $q) {
+                                    $query->where($q[0],$q[1]);
+                                }
+                            })
+                    ->get();
+                $tidak_diterima = 0;
+                $tidak_ditolak = 0;
+                foreach ($tidak as $a) {
+                    if($a->target == 'Diterima'){
+                        $tidak_diterima = $tidak_diterima + 1;
+                    }else if($a->target == 'Tidak Diterima'){
+                        $tidak_ditolak = $tidak_ditolak + 1;
+                    }
+                }        
+            $total = count($tidak);
+            $entropy_tidak = $this->Hitung_Entropy($total, $tidak_diterima, $tidak_ditolak);
+
+            // hitung gain attribut   
+            $hitung_gain = $this->Hitung_gain($lolos_diterima, $lolos_ditolak, $tidak_diterima, $tidak_ditolak, $entropy_lolos, $entropy_tidak, $entropy_induk);
+            
+            $insert_entropy_gain = $this->Insert_entropy_DB($attribute, $entropy_lolos, $entropy_tidak, $hitung_gain);
+
+            $data = [
+                 $entropy_lolos,
+                 $entropy_tidak,
+                 $hitung_gain
+            ];
+
+
+
         }else{
             $d = explode('=', $parent);
             
@@ -124,7 +194,7 @@ class DataMiningController extends Controller
                 ->where($attribute,'lolos')
                 ->where($d[0],$d[1])
                 ->get();
-            // dd($lolos);
+            
 
             $lolos_diterima = 0;
             $lolos_ditolak = 0;
@@ -134,7 +204,8 @@ class DataMiningController extends Controller
                 }else if($a->target == 'Tidak Diterima'){
                     $lolos_ditolak = $lolos_ditolak + 1;
                 }
-            }        
+            } 
+            $total = 0;     
             $total = count($lolos);
             $entropy_lolos = $this->Hitung_Entropy($total, $lolos_diterima, $lolos_ditolak);
 
@@ -218,7 +289,7 @@ class DataMiningController extends Controller
             // dd($total_data);
             $entropy_total = $this->Hitung_Entropy($total_data, $total_diterima, $total_ditolak);
             // dd($entropy_total);
-       $kondisi = '';
+       $kondisi = null;
         // Hitung entropy dan gain tiap atribut
             $gain_exp = $this->Hitung_attribute('player_experience', $entropy_total, $kondisi);
             $gain_skill = $this->Hitung_attribute('skill', $entropy_total, $kondisi);
@@ -236,7 +307,7 @@ class DataMiningController extends Controller
 
             if($g->gain_experience >  $g->gain_skill && $g->gain_experience > $g->gain_intellegence && $g->gain_experience > $g->gain_attitude && $g->gain_experience > $g->gain_turnamen){
                 $poin = [
-                    'poin'      => 'experience',
+                    'poin'      => 'player_experience',
                     'lolos'     => $gain_exp[0],
                     'tidak'     => $gain_exp[1],
                     'gain'      => $gain_exp[2],
@@ -294,12 +365,14 @@ class DataMiningController extends Controller
         $gain_turnamen = 0;
 
         $delete=[];
-
+        // dd($node_att);
         foreach ($node_att as $a) {
             ${"data_$a"} = $this->Hitung_attribute($a, $entropy_induk, $parent);
+            // dd($entropy_induk);
             ${"gain_$a"} = ${"data_$a"}[2];
-              
+            
         }
+        // dump($parent);
         $id_perhitungan = $this->Insert_Hitung($gain_player_experience, $gain_skill, $gain_attitude, $gain_intellegence, $gain_turnamen);
         // dd($data_player_experience);
         if(!isset($data_player_experience[1])){
@@ -317,11 +390,11 @@ class DataMiningController extends Controller
         if(!isset($data_turnamen[1])){
             $delete [] = 'turnamen';
         }
-
+        // dump($delete);
         $g = DB::table('perhitungan')
-            ->orderBy('id_rasio', 'desc')
-            ->first();
-
+        ->orderBy('id_rasio', 'desc')
+        ->first();
+        
         if(isset($data_player_experience[1]) && $g->gain_experience >  $g->gain_skill && $g->gain_experience > $g->gain_intellegence && $g->gain_experience > $g->gain_attitude && $g->gain_experience > $g->gain_turnamen){
             $poin = [
                 'poin'      => 'experience',
@@ -329,7 +402,7 @@ class DataMiningController extends Controller
                 'tidak'     => $data_player_experience[1],
                 'gain'      => $data_player_experience[2],
                 'delete'    => $delete
-                ];
+            ];
         }else if(isset($data_skill[1]) && $g->gain_skill > $g->gain_experience && $g->gain_skill > $g->gain_intellegence && $g->gain_skill > $g->gain_attitude && $g->gain_skill > $g->gain_turnamen){
             $poin = [
                 'poin'      => 'skill',
@@ -337,7 +410,7 @@ class DataMiningController extends Controller
                 'tidak'     => $data_skill[1],
                 'gain'      => $data_skill[2],
                 'delete'    => $delete
-                ];
+            ];
         }else if(isset($data_intellegence[1]) && $g->gain_intellegence > $g->gain_experience && $g->gain_intellegence > $g->gain_skill && $g->gain_intellegence > $g->gain_attitude && $g->gain_intellegence > $g->gain_turnamen){
             $poin = [
                 'poin'      => 'intellegence',
@@ -345,7 +418,8 @@ class DataMiningController extends Controller
                 'tidak'     => $data_intellegence[1],
                 'gain'      => $data_intellegence[2],
                 'delete'    => $delete
-             ];
+            ];
+            // dd($data_intellegence);
         }else if(isset($data_attitude[1]) && $g->gain_attitude > $g->gain_experience && $g->gain_attitude > $g->gain_skill && $g->gain_attitude > $g->gain_intellegence && $g->gain_attitude > $g->gain_turnamen){
             $poin = [
                 'poin'      => 'attitude',
@@ -357,14 +431,14 @@ class DataMiningController extends Controller
         }else if(isset($data_turnamen[1]) && $g->gain_turnamen > $g->gain_experience && $g->gain_turnamen > $g->gain_skill && $g->gain_turnamen > $g->gain_intellegence && $g->gain_turnamen > $g->gain_attitude){
             $poin = [
                 'poin'      => 'turnamen',
-                'lolos'     => $data_intellegence[0],
-                'tidak'     => $data_intellegence[1],
-                'gain'      => $data_intellegence[2],
+                'lolos'     => $data_turnamen[0],
+                'tidak'     => $data_turnamen[1],
+                'gain'      => $data_turnamen[2],
                 'delete'    => $delete
                 ];
         }else{
             $poin = [
-                'data'  => 'gagal'
+                'done'  => 'selesai'
             ];
         }
         
@@ -372,118 +446,182 @@ class DataMiningController extends Controller
        
     }
     function Parent_zero($data){
+        // sdasda
         if($data['lolos'] == 0){
-            $parent = $data['poin'].'=lolos';
+            $parent_lolos = $data['poin'].'=lolos';
             $kondisi = [
-                'parent'    => $parent,
+                'parent'    => $parent_lolos,
                 'target'    => 'Diterima'
             ];
-            $parent = 0;
+            $parent = null;
             $this->Insert_Role($kondisi);
         }else{
             $node_att = $this->Attribut();
-            $data['delete'][] = $data['poin'];
-            foreach ($data['delete'] as $d) {
+            $zero_lolos['delete'][] = $data['poin'];
+            foreach ($zero_lolos['delete'] as $d) {
                 foreach ($node_att as $key => $element) {
                     if ($element ==  $d) {
                         unset($node_att[$key]);
                     }
                 }
             }
-            $parent = $data['poin'].'=lolos';
-            $entropy_induk = $data['lolos'];
-            $data = $this->Perulangan_Perhitungan($parent, $data, $node_att, $entropy_induk);
-        }
+            
+            $parent_lolos = $data['poin'].'=lolos';
+            $entropy_induk_lolos = $data['lolos'];
+            // dd($entropy_induk_lolos);
+            $hasil_lolos = $this->Perulangan_Perhitungan($parent_lolos, $data, $node_att, $entropy_induk_lolos);
+            // dump($hasil_lolos);
+            // $parent_lolos = $hasil_lolos['poin'].'=lolos';
+            $entropy_induk_lolos = $hasil_lolos['lolos'];
+            $end = $this->Perulangan_cabang($hasil_lolos, $parent_lolos, $node_att, $entropy_induk_lolos);
 
+        }
+        // dd($data);
         if($data['tidak'] == 0){
-            $parent = $data['poin'].'=tidak';
+            $parent_tidak = $data['poin'].'=tidak';
             $kondisi = [
-                'parent'    => $parent,
+                'parent'    => $parent_tidak,
                 'target'    => 'tidak diterima'
             ];
-            $parent = 0;
+            $parent = null;
             $this->Insert_Role($kondisi);
         }else{
             $node_att = $this->Attribut();
-            $data['delete'][] = $data['poin'];
-            foreach ($data['delete'] as $d){
+            $zero_tidak['delete'][] = $data['poin'];
+            foreach ($zero_tidak['delete'] as $d){
                 foreach ($node_att as $key => $element) {
                     if ($element == $d) {
                         unset($node_att[$key]);
                     }
                 }
             }
-            $parent = $data['poin'].'=tidak';
-            $entropy_induk = $data['tidak'];
-            $data = $this->Perulangan_Perhitungan($parent, $data, $node_att, $entropy_induk);
+            $parent_tidak = $data['poin'].'=tidak';
+            $entropy_induk_tidak = $data['tidak'];
+            // dd($data);
+            $hasil_tidak = $this->Perulangan_Perhitungan($parent_tidak, $data, $node_att, $entropy_induk_tidak);
+            // $parent_tidak = $parent_tidak."AND".$hasil_tidak['poin'].'=tidak';
+            // dd($parent_tidak);
+            $entropy_induk_tidak = $hasil_tidak['tidak'];
+            $end = $this->Perulangan_cabang($hasil_tidak, $parent_tidak, $node_att, $entropy_induk_tidak);
         }
+        
+            return true;
+        
     }
     function Parent_add($data,$parent){
+    
         if($data['lolos'] == 0){
-            $parent = $parent." AND ".$data['poin'].'=lolos';
+            // dump($data);
+            $parent_lolos = $parent."AND".$data['poin'].'=lolos';
+            // dump($parent);
             $kondisi = [
-                'parent'    => $parent,
+                'parent'    => $parent_lolos,
                 'target'    => 'Diterima'
             ];
-            $parent = 0;
+            $parent_lolos = null;
             $this->Insert_Role($kondisi);
         }else{
-            $parent = $parent." AND ".$data['poin'].'=lolos';
-            $entropy_induk = $data['lolos'];
+            $cabang_lolos = $data;
+            $parent_lolos = $parent."AND".$cabang_lolos['poin'].'=lolos';
+            $entropy_induk_lolos = $cabang_lolos['lolos'];
             $node_att = $this->Attribut();
-            $data['delete'][] = $data['poin'];
-            dd($data['delete']);
-            foreach ($data['delete'] as $d) {
+            $cabang_lolos['delete'][] = $cabang_lolos['poin'];
+            // dd($data['delete']);
+            foreach ($cabang_lolos['delete'] as $d) {
                 foreach ($node_att as $key => $element) {
                     if ($element ==  $d) {
                         unset($node_att[$key]);
                     }
                 }
             }
-            dd('dd');
-            $data = $this->Perulangan_Perhitungan($parent, $data, $node_att, $entropy_induk);
+            // dd($paren    t_lolos);
+            $hasil_lolos = $this->Perulangan_Perhitungan($parent_lolos, $data, $node_att, $entropy_induk_lolos);
+            if(isset($hasil_lolos['done'])){
+                dump($parent);
+                $parent_lolos = $parent."AND".$data['poin'].'=lolos';
+                $kondisi = [
+                    'parent'    => $parent_lolos,
+                    'target'    => 'Diterima'
+                ];
+                $parent_lolos = null;
+                $this->Insert_Role($kondisi);
+            }else{
+                // dd('l');
+                // $parent_lolos = $parent."AND".$hasil_lolos['poin'].'=lolos';
+                $entropy_induk_lolos = $hasil_lolos['lolos'];
+                $end = $this->Perulangan_cabang($hasil_lolos, $parent_lolos, $node_att, $entropy_induk_lolos);
+            
+            }
+            
         }
+
         if($data['tidak'] == 0){
-            $parent = $parent." AND ".$data['poin'].'=tidak';
+            $parent_tidak = $parent."AND".$data['poin'].'=tidak';
             $kondisi = [
-                'parent'    => $parent,
+                'parent'    => $parent_tidak,
                 'target'    => 'tidak diterima'
             ];
-            $parent = 0;
+            $parent_tidak = null;
             $this->Insert_Role($kondisi);
             $kondisi=[];
         }else{
-            $parent = $parent." AND ".$data['poin'].'=tidak';
-            $entropy_induk = $data['tidak'];
+            $cabang_tidak = $data;
+            $parent_tidak = $parent."AND".$cabang_tidak['poin'].'=tidak';
+            $entropy_induk_tidak = $cabang_tidak['tidak'];
             $node_att = $this->Attribut();
-            $data['delete'][] = $data['poin'];
-            foreach ($data['delete'] as $d) {
+            $cabang_tidak['delete'][] = $cabang_tidak['poin'];
+            foreach ($cabang_tidak['delete'] as $d) {
                 foreach ($node_att as $key => $element) {
                     if ($element ==  $d) {
                         unset($node_att[$key]);
                     }
                 }
-                dd('dd');
             }
-            $data = $this->Perulangan_Perhitungan($parent, $data, $node_att, $entropy_induk);
+            $hasil_tidak = $this->Perulangan_Perhitungan($parent_tidak, $data, $node_att, $entropy_induk_tidak);
+            // dd($hasil_tidak);
+            if(isset($hasil_tidak['done'])){
+                $kondisi = [
+                    'parent'    => $parent_tidak,
+                    'target'    => 'tidak diterima'
+                ];
+                $parent_tidak = null;
+                $this->Insert_Role($kondisi);
+            }else{
+                // dd($hasil_tidak);
+                // $parent_tidak = $parent."AND".$hasil_tidak['poin'].'=tidak';
+                $entropy_induk_tidak = $hasil_tidak['tidak'];
+                $end = $this->Perulangan_cabang($hasil_tidak, $parent_tidak, $node_att, $entropy_induk_tidak);
+            }
+            
+            
+            
         }
     }
-    function Perulangan_cabang($data){
-        do{
-            if($parent == 0){
-                
-            }else{
-                
-            }
-        }while($status == true);
+    function Perulangan_cabang($data, $parent, $node_att, $entropy_induk){
+      
+            if($parent == null){ 
+                // dump('as');
+                $hitung = $this->Parent_zero($data, $node_att);    
+            }else if($parent != null){
+                // dump($parent);
+                // dd($parent);
+                $hitung = $this->Parent_add($data, $parent);
+            }  
+        return true;
     }
     function HitungMining(Request $request){
-        $data = $this->Perhitungan_pertama();
+        // Menghapus semua data rule
+        DB::table('rule')->truncate();
         
-        do{
-            $this->Perulangan_cabang($data);
-            
-        }while($stop == true);
+        
+        // menjalankan Perhitungan pertama
+        $data = $this->Perhitungan_pertama();
+        // dd($data);
+        // 
+        $parent = null;
+        $node_att = $this->Attribut();
+        $entropy_induk = $data['lolos'];
+        $this->Perulangan_cabang($data, $parent, $node_att, $entropy_induk);
         
 
 
