@@ -1,20 +1,20 @@
-function IndexDataTalent(){
+function IndexDataUji(){
     if ($(".child").length){
         $(".child").remove();
     }
     $.ajax({
-        url : '/index-talent',
+        url : '/index-data-uji',
         data : {},
         type : 'get',
         dataType : 'html',
         success : function(html){
             $('.mother').append(html);
             $('.nav-active').removeClass("active");
-            $('.nav-data-talent').addClass("active");
+            $('.nav-data-uji').addClass("active");
 
-            $('#table-data-talent').DataTable({
+            $('#table-data-uji').DataTable({
                 ajax : {
-                    url : '/data-table-data-talent',
+                    url : '/data-table-data-uji',
                     dataSrc : ''
                   },
                   "columnDefs": [ 
@@ -59,13 +59,92 @@ function IndexDataTalent(){
         }
     })
 }
-
-function PostInputDataTalent(){
-  $.LoadingOverlay("show", {
-    image       : "",
-    fontawesome : "fa fa-cog fa-spin",
-  });   
-  $.ajaxSetup({
+function DeleteDataUji(){
+    Swal.fire({
+        title: 'Apakah Kamu Yakin?',
+        text: "Semua Dataset Yang sudah Terimport Akan Terhapus",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Hapus',
+        cancelButtonText: 'Tidak'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+          });
+          $.ajax({
+            url : '/delete-all-data-uji',
+            data : {},
+            type : 'post',
+            dataType : 'json',
+            contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+            processData: false, // NEEDED, DON'T OMIT THIS
+            success : function(e){
+                if(e.code == 200 ){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Hapus Berhasil',
+                        html : 'Silahkan Upload Kembali Dataset Anda',
+                        timerProgressBar: true,
+                        timer: 3000,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            timerInterval = setInterval(() => {
+                              const content = Swal.getContent()
+                              if (content) {
+                                const b = content.querySelector('b')
+                                if (b) {
+                                  b.textContent = Swal.getTimerLeft()
+                                }
+                              }
+                            }, 100)
+                          },
+                          willClose: () => {
+                            clearInterval(timerInterval)
+                          }
+                      })
+                }else if(e.code == 300){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Dataset Kosong',
+                        html : 'Mohon Upload Dataset',
+                        timerProgressBar: true,
+                        timer: 3000
+                    })
+                }else{
+                  Swal.fire({
+                    icon: 'warning',
+                    title: 'Terjadi Kesalahan',
+                    html : 'Mohon Hubungi Pengembang',
+                    timerProgressBar: true,
+                    timer: 3000
+                })
+                }
+            },
+            error : function(data){
+                var a = data.responseJSON.errors;
+                console.log(a);
+                $.each(a, function(index, value){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Input Gagal',
+                        html : value,
+                        timerProgressBar: true,
+                        timer: 4000
+                    }) 
+                })
+            }
+          })
+        }
+    })
+}
+function PostInputDataUji(){
+   
+    $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
@@ -74,7 +153,7 @@ function PostInputDataTalent(){
     var formData = new FormData(form);
     // e.preventDefault();
     $.ajax({
-        url : '/upload-data-talent',
+        url : '/upload-data-uji',
         data : formData,
         type : 'post',
         dataType : 'json',
@@ -82,7 +161,6 @@ function PostInputDataTalent(){
         processData: false, // NEEDED, DON'T OMIT THIS
         success : function(e){
             if(e.code == 200 ){
-              $.LoadingOverlay("hide");
                 Swal.fire({
                     icon: 'success',
                     title: 'Import Berhasil',
@@ -106,7 +184,6 @@ function PostInputDataTalent(){
                       }
                   })
             }else if(e.code == 300){
-              $.LoadingOverlay("hide");
               Swal.fire({
                   icon: 'warning',
                   title: 'Dataset Masih Tersedia',
@@ -115,7 +192,6 @@ function PostInputDataTalent(){
                   timer: 3000
               })
             }else{
-              $.LoadingOverlay("hide");
                 Swal.fire({
                     icon: 'warning',
                     title: 'Proses Gagal',
@@ -126,7 +202,6 @@ function PostInputDataTalent(){
             }
         },
         error : function(data){
-          $.LoadingOverlay("hide");
             var a = data.responseJSON.errors;
             console.log(a);
             $.each(a, function(index, value){
@@ -143,30 +218,18 @@ function PostInputDataTalent(){
         }
     })
 }
-
-function DeleteAllDataTalent(){
-  Swal.fire({
-    title: 'Apakah Kamu Yakin?',
-    text: "Semua Dataset Yang sudah Terimport Akan Terhapus",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Hapus',
-    cancelButtonText: 'Tidak'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      $.LoadingOverlay("show", {
+function MiningDataUji(){
+    $.LoadingOverlay("show", {
         image       : "",
         fontawesome : "fa fa-cog fa-spin",
-      }); 
-      $.ajaxSetup({
+      });
+    $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-      });
-      $.ajax({
-        url : '/delete-all-data-talent',
+    });
+    $.ajax({
+        url : '/mining-data-uji',
         data : {},
         type : 'post',
         dataType : 'json',
@@ -174,69 +237,51 @@ function DeleteAllDataTalent(){
         processData: false, // NEEDED, DON'T OMIT THIS
         success : function(e){
             if(e.code == 200 ){
-              $.LoadingOverlay("hide");
+                $.LoadingOverlay("hide");
                 Swal.fire({
                     icon: 'success',
-                    title: 'Hapus Berhasil',
-                    html : 'Silahkan Upload Kembali Dataset Anda',
+                    title: 'Import Berhasil',
+                    html : 'Silahkan Cek Kembali Dataset Anda',
                     timerProgressBar: true,
                     timer: 3000,
                     didOpen: () => {
                         Swal.showLoading()
                         timerInterval = setInterval(() => {
-                          const content = Swal.getContent()
-                          if (content) {
+                            const content = Swal.getContent()
+                            if (content) {
                             const b = content.querySelector('b')
                             if (b) {
-                              b.textContent = Swal.getTimerLeft()
+                                b.textContent = Swal.getTimerLeft()
                             }
-                          }
+                            }
                         }, 100)
-                      },
-                      willClose: () => {
+                        },
+                        willClose: () => {
                         clearInterval(timerInterval)
-                      }
-                  })
+                        }
+                    })
             }else if(e.code == 300){
-              $.LoadingOverlay("hide");
+                $.LoadingOverlay("hide");
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Dataset Kosong',
-                    html : 'Mohon Upload Dataset',
+                    title: 'Dataset Uji Atau Rule Belum ada',
+                    html : 'Mohon Lakukan Mining Data Talent dan Lakukan Upload Data Uji Terlebih Dahulu',
                     timerProgressBar: true,
                     timer: 3000
                 })
-            }else{
-              $.LoadingOverlay("hide");
-              Swal.fire({
-                icon: 'warning',
-                title: 'Terjadi Kesalahan',
-                html : 'Mohon Hubungi Pengembang',
-                timerProgressBar: true,
-                timer: 3000
-            })
             }
         },
         error : function(data){
             $.LoadingOverlay("hide");
-            var a = data.responseJSON.errors;
-            console.log(a);
-            $.each(a, function(index, value){
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Input Gagal',
-                    html : value,
-                    timerProgressBar: true,
-                    timer: 4000
-                }) 
+            Swal.fire({
+                icon: 'warning',
+                title: 'Proses Gagal',
+                html : 'Mohon Hubungi Pengembang',
+                timerProgressBar: true,
+                timer: 3000
             })
-        }
-      })
-    }
-  })
-  
-  
-  
-  
-  
+              // console.log(a);
+             
+          }
+    })
 }

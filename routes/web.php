@@ -11,6 +11,9 @@ use App\Http\Controllers\Admin\Page\DataTalentController;
 // connect controller mining
 use App\Http\Controllers\Admin\Page\DataMiningController;
 
+// connect controller data uji
+use App\Http\Controllers\Admin\Page\DataUjiController;
+
 // connect controller pohon keputusan
 use App\Http\Controllers\Admin\Page\PohonKeputusanController;
 
@@ -56,15 +59,23 @@ Route::group(['middleware' => ['auth']], function(){
         Route::post('/upload-data-talent', [DataTalentController::class, 'PostDataTalent']);
         Route::post('/delete-all-data-talent', [DataTalentController::class, 'DeleteAllDataTalent']);
         
-   
+    // data Uji Index
+        Route::get('/index-data-uji', [DataUjiController::class, 'IndexDataUji'])->name('data-uji');
+        Route::get('/data-table-data-uji', [DataUjiController::class, 'DataTableDataUji']);
+        Route::post('/upload-data-uji', [DataUjiController::class, 'PostDataUji']);
+        Route::post('/delete-all-data-uji', [DataUjiController::class, 'DeleteAllDataUji']);
+        Route::post('/mining-data-uji', [DataUjiController::class, 'MiningDataUji']);
+
     // mining index
         Route::get('/index-mining', [DataMiningController::class, 'IndexPageMining'])->name('data-mining');
         Route::post('hitung-mining', [DataMiningController::class, 'HitungMining']);
-    
+
     // pohon keputusan index
         Route::get('/index-pohon-keputusan', [PohonKeputusanController::class, 'IndexPagePohonKeputusan'])->name('data-pohon-keputusan');
         Route::get('/data-table-data-rule', [PohonKeputusanController::class, 'DataTableRule']);
-    
+        Route::post('/delete-rule', [PohonKeputusanController::class, 'DeletedAllRule']);
+        Route::post('/akurasi-rule', [PohonKeputusanController::class, 'HitungAkurasiRule']);
+
     // prediksi c4 index
         Route::get('/index-prediksi-c4', [PrediksiC4Controller::class, 'IndexPagePrediksiC4'])->name('data-prediksi-c4');
 

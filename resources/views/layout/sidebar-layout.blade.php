@@ -65,6 +65,10 @@
                     <a href="#" onclick="IndexDataMining()">
                         <i class="fas fa-gears"></i>Data Mining</a>
                 </li>
+                <li class="nav-active nav-data-uji has-sub">
+                    <a href="#" onclick="IndexDataUji()">
+                        <i class="fa fa-sitemap"></i>Import Data Uji</a>
+                </li>
                 <li class="nav-active nav-pohon-keputusan has-sub">
                     <a href="#" onclick="IndexPohonKeputusan()">
                         <i class="fa fa-sitemap"></i>Pohon Keputusan</a>
@@ -72,10 +76,6 @@
                 <li class="nav-active nav-prediksi-c4 has-sub">
                     <a href="#" onclick="IndexPrediksiC4()">
                         <i class="fas fa-user"></i>Prediksi C4</a>
-                </li>
-                <li class="nav-active nav-hasil-prediksi has-sub">
-                    <a href="#" onclick="IndexHasilPrediksi()">
-                        <i class="fas fa-bar-chart-o"></i>Hasil Prediksi</a>
                 </li>
             </ul>
         </nav>

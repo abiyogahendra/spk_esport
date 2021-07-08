@@ -30,13 +30,14 @@
         </div>
     </div>
 </div>
-
+@include('layout.modal-master')
 @endsection()
 
 @section('custom-page')
     <script src="{{asset('custom/js/landing-page/dashboard.js')}}"></script>
     <script src="{{asset('custom/js/landing-page/data-talent.js')}}"></script>
     <script src="{{asset('custom/js/landing-page/data-mining.js')}}"></script>
+    <script src="{{asset('custom/js/landing-page/data-uji.js')}}"></script>
     <script src="{{asset('custom/js/landing-page/pohon-keputusan.js')}}"></script>
     <script src="{{asset('custom/js/landing-page/prediksi-c4.js')}}"></script>
     <script src="{{asset('custom/js/landing-page/hasil-prediksi.js')}}"></script>

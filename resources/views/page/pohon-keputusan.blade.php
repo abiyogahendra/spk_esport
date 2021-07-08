@@ -9,7 +9,7 @@
                             <div class="container">
                                 <div class="row justify-content-center">
                                     <div class="col-md-9 center" >
-                                        <button class="btn btn-outline-success btn-lg" onclick="HitungAkurasiRule()"><i class="fas fa-bar-chart-o"></i> Hitung Tingkat Akurasi</button>
+                                        <button class="btn btn-outline-success btn-lg" onclick="HitungAkurasi()"><i class="fas fa-bar-chart-o"></i> Hitung Tingkat Akurasi</button>
                                         <button type="button" class="btn btn-outline-danger btn-lg" onclick="DeleteAllRule()"><i class="fa fa-warning"></i> Hapus Data Rule</button>
                                     </div>
                                 </div>
@@ -36,7 +36,6 @@
                                     <tr class="center">
                                         <th>ID Rule</th>
                                         <th>Rule</th>
-                                        <th>Akar</th>
                                         <th>Keputusan</th>
                                     </tr>
                                 </thead>
