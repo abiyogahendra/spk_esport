@@ -113,7 +113,7 @@
                     <div>
                     </div>
                 </form>
-                <button class="au-btn au-btn--block au-btn--green m-b-20" onclick="Prediksi()">sign in</button>
+                <button class="au-btn au-btn--block au-btn--green m-b-20" onclick="Prediksi()">Lakukan Prediksi</button>
             </div>
         </div>
     </div>
