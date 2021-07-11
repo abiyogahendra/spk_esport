@@ -40,5 +40,4 @@
     <script src="{{asset('custom/js/landing-page/data-uji.js')}}"></script>
     <script src="{{asset('custom/js/landing-page/pohon-keputusan.js')}}"></script>
     <script src="{{asset('custom/js/landing-page/prediksi-c4.js')}}"></script>
-    <script src="{{asset('custom/js/landing-page/hasil-prediksi.js')}}"></script>
 @endsection()

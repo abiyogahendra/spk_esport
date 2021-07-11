@@ -78,10 +78,10 @@ Route::group(['middleware' => ['auth']], function(){
 
     // prediksi c4 index
         Route::get('/index-prediksi-c4', [PrediksiC4Controller::class, 'IndexPagePrediksiC4'])->name('data-prediksi-c4');
+        Route::post('/check-prediksi-talent', [PrediksiC4Controller::class, 'CheckRule']);
+        Route::post('/prediksi-talent', [PrediksiC4Controller::class, 'PerhitunganPrediksi']);
 
-    // hasil prediksi index
-        Route::get('/index-hasil-prediksi', [HasilPrediksiController::class, 'IndexPageHasilPrediksi'])->name('data-hasil-prediksi');
-
+    
 
 
 

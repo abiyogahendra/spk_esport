@@ -75,7 +75,7 @@
                 </li>
                 <li class="nav-active nav-prediksi-c4 has-sub">
                     <a href="#" onclick="IndexPrediksiC4()">
-                        <i class="fas fa-user"></i>Prediksi C4</a>
+                        <i class="fas fa-user"></i>Prediksi C4.5</a>
                 </li>
             </ul>
         </nav>
