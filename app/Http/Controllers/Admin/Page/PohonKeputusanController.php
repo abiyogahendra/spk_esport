@@ -97,13 +97,16 @@ class PohonKeputusanController extends Controller{
         // mencari nilai akurasi 
         $tp_tn = $true_diterima + $true_tidak;
         $akurasi = $tp_tn / $total;
+        $akurasi = $akurasi * 100;
         // dd($akurasi);
         // menghitung presisi
         $fp_tp = $false_diterima + $true_diterima;
         $presisi = $true_diterima / $fp_tp;
+        $presisi = $presisi * 100;
         
         $fn_tp = $false_tidak + $true_diterima;
         $recall = $true_diterima / $fn_tp;
+        $recall = $recall * 100;
         
         return view('modal.modal-akurasi', compact('akurasi','presisi','recall'));
     }
