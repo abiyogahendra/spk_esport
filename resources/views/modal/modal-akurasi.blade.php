@@ -19,13 +19,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col center">
                             <h4>{{$akurasi}} %</h4>
                         </div>
-                        <div class="col">
+                        <div class="col center">
                             <h4>{{$presisi}} %</h4>
                         </div>
-                        <div class="col">
+                        <div class="col center">
                             <h4>{{$recall}} %</h4>
                         </div>
                     </div>

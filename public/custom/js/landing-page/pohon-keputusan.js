@@ -118,16 +118,55 @@ function HitungAkurasi(){
         }
     });
     $.ajax({
-        url : 'akurasi-rule',
+        url : 'check-data-uji',
         data : {},
         type    : 'post',
-        dataType : 'html',
-        success : function(html){
-            if ($(".data_content").length){
-                $(".data_content").remove();
+        dataType : 'json',
+        success : function(respn){
+            if(respn.code == 200){
+                $.ajax({
+                    url : 'akurasi-rule',
+                    data : {},
+                    type    : 'post',
+                    dataType : 'html',
+                    success : function(html){
+                        if ($(".data_content").length){
+                            $(".data_content").remove();
+                        }
+                        $(' #content_modal').append(html);
+                        $('.master_modal').modal('show');
+                    },
+                    error : function(e){
+                        $.LoadingOverlay("hide");
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Terjadi Kesalahan',
+                            html : 'Pastikan data uji sudah terklasifikasi atau segera hubungi pengembang',
+                            timerProgressBar: true,
+                            timer: 9000
+                        })
+                    }
+                })
+            }else{
+                $.LoadingOverlay("hide");
+                Swal.fire({
+                icon: 'warning',
+                title: 'Terjadi Kesalahan',
+                html : 'Anda Belum Mengimport Data Uji',
+                timerProgressBar: true,
+                timer: 9000
+            })
             }
-            $(' #content_modal').append(html);
-            $('.master_modal').modal('show');
+        },
+        error : function(e){
+            $.LoadingOverlay("hide");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Terjadi Kesalahan',
+                html : 'Mohon Hubungi Pengembang',
+                timerProgressBar: true,
+                timer: 9000
+            })
         }
-    })
+    });
 }

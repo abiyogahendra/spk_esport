@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth']], function(){
         Route::get('/index-pohon-keputusan', [PohonKeputusanController::class, 'IndexPagePohonKeputusan'])->name('data-pohon-keputusan');
         Route::get('/data-table-data-rule', [PohonKeputusanController::class, 'DataTableRule']);
         Route::post('/delete-rule', [PohonKeputusanController::class, 'DeletedAllRule']);
+        Route::post('/check-data-uji', [PohonKeputusanController::class, 'CheckDataUji']);
         Route::post('/akurasi-rule', [PohonKeputusanController::class, 'HitungAkurasiRule']);
 
     // prediksi c4 index

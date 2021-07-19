@@ -53,17 +53,29 @@ class PohonKeputusanController extends Controller{
         }
     }
 
+    function CheckDataUji(){
+        $check = DB::table('data_uji')
+            ->count();
+        
+        if($check > 0){
+            return response()->json([
+                'code'  => 200
+            ]);
+        }else{
+            return response()->json([
+                'code'  => 500
+            ]);
+        }
+    }
     function HitungAkurasiRule(){
-        $training_diterima  = DB::table('talent_survey')
-            ->where('target', 'diterima')
-            ->get();
-        $training_tidak  = DB::table('talent_survey')
-            ->where('target', 'tidak diterima')
-            ->get();
-        $total = count($training_diterima) + count($training_tidak);
-        $uji = DB::table('data_uji')
+        $uji_diterima = DB::table('data_uji')
+            ->where('target','diterima')
             ->get();
 
+        $uji_tidak  = DB::table('data_uji')
+            ->where('target', 'tidak diterima')
+            ->get();
+        $total = count($uji_diterima) + count($uji_tidak);
 
         $true_diterima = 0;
         $false_diterima = 0;
@@ -71,29 +83,30 @@ class PohonKeputusanController extends Controller{
         $false_tidak = 0;
         $error = 0;
         // dd($training);   
-        foreach($training_diterima as $q){
-            // dd($training_diterima->target);
-            $uji = DB::table('data_uji')
+        foreach($uji_diterima as $q){
+            // dd($q->target);
+            $training_diterima = DB::table('talent_survey')
                 ->where('id_talent', $q->id_talent)
                 ->get();
-           
-            if($uji[0]->target == "Diterima"){
+            
+            if($training_diterima[0]->target == "Diterima" || $training_diterima[0]->target == "diterima" ){
                 $true_diterima = $true_diterima + 1;
+            }else{
+                $false_tidak = $false_tidak + 1;
+            }
+            // dd($true_diterima);
+        }
+        foreach($uji_tidak as $q){
+            $training_tidak = DB::table('talent_survey')
+                ->where('id_talent', $q->id_talent)
+                ->get();
+            if($training_tidak[0]->target == "Tidak Diterima" || $training_tidak[0]->target == "tidak diterima" || $training_tidak[0]->target == "Tidak diterima" || $training_tidak[0]->target == "tidak Diterima"){
+                $true_tidak = $true_tidak + 1;
             }else {
                 $false_diterima = $false_diterima + 1;
             }
         }
-        foreach($training_tidak as $q){
-            $uji = DB::table('data_uji')
-                ->where('id_talent', $q->id_talent)
-                ->get();
-            if($uji[0]->target == "tidak diterima"){
-                $true_tidak = $true_tidak + 1;
-            }else {
-                $false_tidak = $false_tidak + 1;
-            }
-        }
-        
+        // dd($true_diterima + $true_tidak + $false_diterima + $false_tidak);
         // mencari nilai akurasi 
         $tp_tn = $true_diterima + $true_tidak;
         $akurasi = $tp_tn / $total;
